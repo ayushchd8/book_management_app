@@ -1,13 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from books.views.books_views import book_list_create, book_detail, add_review, get_reviews, book_summary, generate_book_summary, generate_summary,book_recommendations
+from books.views.books_views import BookViewSet, ReviewViewSet, book_summary, book_recommendations, generate_book_summary
+
+router = DefaultRouter()
+router.register(r'books', BookViewSet)
+router.register(r'books/(?P<book_id>\d+)/reviews', ReviewViewSet, basename='review')
 
 urlpatterns = [
-    path('books', book_list_create),
-    path('books/<int:id>', book_detail),
-    path('books/<int:id>/reviews', add_review),
-    path('books/<int:id>/reviews', get_reviews),
-    path('books/<int:id>/summary', book_summary),
-    path('recommendations', book_recommendations),
-    path('generate-summary', generate_book_summary),
+    path('', include(router.urls)),
+    path('books/<int:pk>/summary/', book_summary, name='book-summary'),
+    path('recommendations/', book_recommendations, name='book-recommendations'),
+    path('generate-summary/', generate_book_summary, name='generate-summary'),
 ]
